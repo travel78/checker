@@ -1,4 +1,7 @@
-<form (onSubmit)="login($event,username.value,password.value)" >
+<form (ngSubmit)="login($event,username.value,password.value)" >
+  <div class="form-group text-danger" *ngIf="errorMessage" >
+    <h5>{{errorMessage}}</h5>
+  </div>
   <div class="form-group">
     <label for="username">username</label>
     <input type="text" id="username" #username  class="form-control">

@@ -5,6 +5,7 @@ import com.shpyrna.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
 
     private final ObjectMapper mapper;
 
-    AuthSuccessHandler(@Qualifier("mappingJackson2HttpMessageConverter") MappingJackson2HttpMessageConverter messageConverter) {
+    AuthSuccessHandler(MappingJackson2HttpMessageConverter messageConverter) {
         this.mapper = messageConverter.getObjectMapper();
     }
 
@@ -30,10 +31,9 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_OK);
-//        User userDetails = (User) authentication.getPrincipal();
-//        System.out.println(userDetails.toString());
-//        PrintWriter writer = response.getWriter();
-//        mapper.writeValue(writer, userDetails);
-//        writer.flush();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        PrintWriter writer = response.getWriter();
+        mapper.writeValue(writer, userDetails);
+        writer.flush();
     }
 }

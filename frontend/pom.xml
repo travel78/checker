@@ -14,14 +14,7 @@
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-<!--<dependencies>-->
-    <!--<dependency>-->
-        <!--<groupId>org.webjars</groupId>-->
-        <!--<artifactId>bootstrap</artifactId>-->
-        <!--<version>3.3.7</version>-->
-    <!--</dependency>-->
 
-<!--</dependencies>-->
 
     <build>
         <plugins>

@@ -12,9 +12,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // Sets CSRF protection cookie
-    // this.http.get("/onload").forEach(r => {
-    //   console.log(r.text());
-    // });
+    this.http.get("/onload").forEach(r => {
+    });
 
   }
 

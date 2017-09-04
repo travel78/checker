@@ -10,17 +10,11 @@ import {SigninComponent} from "./auth/signin/signin.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/recipes', pathMatch: 'full'},
-  {
-    path: 'recipes', component: RecipesComponent, children: [
-    {path: '', component: RecipeStartComponent},
-    {path: 'new', component: RecipeEditComponent},
-    {path: ':id', component: RecipeDetailComponent},
-    {path: ':id/edit', component: RecipeEditComponent}
-  ]
-  },
+
   {path: 'shopping-list', component: ShopingListComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'signin', component: SigninComponent}
+  {path: 'signin', component: SigninComponent},
+  {path: 'error',  redirectTo: '/signin', pathMatch: 'full'}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, {useHash: true})],

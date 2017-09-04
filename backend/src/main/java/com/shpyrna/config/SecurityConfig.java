@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
@@ -30,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthSuccessHandler authSuccessHandler;
     @Autowired
     private AuthFailureHandler authFailureHandler;
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,24 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-//    public InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemory() {
-//        return new InMemoryUserDetailsManagerConfigurer<>();
-//    }
-//
-//    @Autowired
-//    public void configureInMemory(AuthenticationManagerBuilder auth, AuthenticationProvider provider) throws Exception {
-//        inMemory().withUser("xxx")
-//                .password("xxx")
-//                .authorities("ROLE_ADMIN")
-//                .and()
-//                .configure(auth);
-//        auth.authenticationProvider(provider);
-//    }
-
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
         auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+
     }
 
     @Override
@@ -72,7 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(
-                        "templates/csrf/index.html",
                         "/login",
                         "/register",
                         "/",
@@ -84,30 +71,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/ll"
                 ).access("hasRole('ADMIN')");
 
-        http.csrf().disable();
-//                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        http.csrf()
+//                .disable();
+//                ;
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
-//        http.exceptionHandling()
-//                .authenticationEntryPoint(authenticationEntryPoint);
-
+        http.exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint);
         http
                 .formLogin()
                 .permitAll()
                 .loginProcessingUrl("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
+                .usernameParameter("myusername")
+                .passwordParameter("mypassword")
                 .successHandler(authSuccessHandler)
                 .failureHandler(authFailureHandler)
                 .and()
                 .logout()
                 .permitAll()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //                .logoutSuccessHandler(logoutSuccessHandler)
-                .and()
+//                .and()
+//                .sessionManagement()
+//                .maximumSessions(1);
+
+            .and()
                 .sessionManagement()
                 .maximumSessions(1);
-//        http.httpBasic().disable();
-//        http.addFilterBefore(new AuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+
 //        http.authorizeRequests().anyRequest().authenticated();
+
     }
 }

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Http, Headers} from "@angular/http";
+import {Http, Headers, RequestOptions} from "@angular/http";
 import {NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
 import 'rxjs/Rx';
@@ -10,38 +10,37 @@ import 'rxjs/Rx';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent implements OnInit {
+  errorMessage: String;
 
-
-  constructor(private http: Http,private router: Router) {
+  constructor(private http: Http, private router: Router) {
   }
 
   ngOnInit() {
+    this.errorMessage = '';
   }
 
-   login(event,username,password) {
-    // event.preventDefault();
-    // let body = JSON.stringify({username, password});
-    //  console.log(body);
-     // const contentHeaders = new Headers();
-    // contentHeaders.append('Accept', 'application/json');
-    // contentHeaders.append('Content-Type', 'application/json');
-     let body = `username=${username}&password=${password}`;
-     console.log(body);
-     let contentHeaders = new Headers();
-     contentHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
-    this.http.post('/login', body, { headers: contentHeaders })
+  login(event, myusername, mypassword) {
+    event.preventDefault();
+
+    const contentHeaders = new Headers();
+    let body = "myusername=" + myusername + "&mypassword=" + mypassword;
+    contentHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    this.http.post('/login', body, {headers: contentHeaders})
       .subscribe(
         response => {
           console.log('call from response');
-          const sss = response.text();
+          const sss = response.json();
           console.log(sss);
           this.router.navigate(['shopping-list']);
-
-          localStorage.setItem('id_token', response.json().id_token);
+          // localStorage.setItem('id_token', response.json().id_token);
+          // console.log(localStorage.getItem('id_token'));
         },
         error => {
-          alert(error.text());
+
           console.log(error.text());
+          this.errorMessage = 'Не правильний логін або пароль';
+          this.router.navigate(['signin']);
         }
       );
   }

@@ -24,11 +24,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByUsername(String username) {
+        System.out.println("call in findUserByUsername");
         return userDao.findByUsername(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        System.out.println("call in loadUserByUsername");
         return userDao.findByUsername(s);
     }
 }

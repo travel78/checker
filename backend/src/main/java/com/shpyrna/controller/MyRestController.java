@@ -2,12 +2,13 @@ package com.shpyrna.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,12 @@ public class MyRestController {
         System.out.println("conection is working");
         return "Response from server";
     }
+
+
+
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/login")
-    public void login(){
+    public ResponseEntity login() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
